@@ -40,7 +40,17 @@ namespace ofxNI2
 #ifndef TARGET_WIN32
             setenv("OPENNI2_DRIVERS_PATH", path.c_str(), 1);
 #endif
-            assert_error(openni::OpenNI::initialize());
+            openni::Status status = openni::OpenNI::initialize();
+             if (status != openni::STATUS_OK)
+             {
+                 ofLogError() << "Initialize failed:" << endl << openni::OpenNI::getExtendedError();
+                 ofExit(-1);
+             }
+             else {
+                 openni::Version version = openni::OpenNI::getVersion();
+                 ofLogNotice() << "OpenNI initialised. Version: " << version.major << "." << version.minor << "." << version.maintenance << "." << version.build;
+             }
+            //assert_error(openni::OpenNI::initialize());
         }
         else
         {
@@ -81,8 +91,13 @@ bool Device::setup()
 {
 	ofxNI2::init();
 
-	if (!check_error(device.open(openni::ANY_DEVICE))) return false;
-	if (!check_error(device.setDepthColorSyncEnabled(true))) return false;
+    if (!check_error(device.open(openni::ANY_DEVICE))) {
+        std::exit(-1);
+    }
+    if (!check_error(device.setDepthColorSyncEnabled(true)))
+    {
+        return false;
+    }
 	
 	return true;
 }
@@ -101,7 +116,7 @@ bool Device::setup(int device_id)
 		
 		listDevices();
 		
-		return false;
+        std::exit(-1);
 	}
 	
 	if (!check_error(device.open(deviceList[device_id].getUri()))) return false;
@@ -358,7 +373,7 @@ void IrStream::setPixels(openni::VideoFrameRef frame)
 	if (m.getPixelFormat() == openni::PIXEL_FORMAT_GRAY8)
 	{
 		const unsigned char *src = (const unsigned char*)frame.getData();
-		unsigned char *dst = pix.getBackBuffer().getPixels();
+        unsigned char *dst = pix.getBackBuffer().getData();
 
 		for (int i = 0; i < num_pixels; i++)
 		{
@@ -370,7 +385,7 @@ void IrStream::setPixels(openni::VideoFrameRef frame)
 	else if (m.getPixelFormat() == openni::PIXEL_FORMAT_GRAY16)
 	{
 		const unsigned short *src = (const unsigned short*)frame.getData();
-		unsigned char *dst = pix.getBackBuffer().getPixels();
+        unsigned char *dst = pix.getBackBuffer().getData();
 
 		for (int i = 0; i < num_pixels; i++)
 		{
@@ -413,7 +428,7 @@ void ColorStream::setPixels(openni::VideoFrameRef frame)
 	if (m.getPixelFormat() == openni::PIXEL_FORMAT_RGB888)
 	{
 		const unsigned char *src = (const unsigned char*)frame.getData();
-		unsigned char *dst = pix.getBackBuffer().getPixels();
+        unsigned char *dst = pix.getBackBuffer().getData();
 		
 		for (int i = 0; i < num_pixels; i++)
 		{
@@ -522,7 +537,7 @@ ofVec3f DepthStream::getWorldCoordinateAt(int x, int y)
 	ofVec3f v;
 	
 	const ofShortPixels& pix = getPixelsRef();
-	const unsigned short *ptr = pix.getPixels();
+    const unsigned short *ptr = pix.getData();
 	unsigned short z = ptr[pix.getWidth() * y + x];
 	
 	openni::CoordinateConverter::convertDepthToWorld(stream, x, y, z, &v.x, &v.y, &v.z);

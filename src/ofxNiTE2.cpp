@@ -6,19 +6,32 @@
 
 namespace ofxNiTE2
 {
+    void check_error(nite::Status rc)
+    {
+        if (rc == nite::STATUS_OK) {
+            return;
+        }
+        ofLogError("ofxNiTE2") << openni::OpenNI::getExtendedError();
+    }
+
 	void init()
 	{
 		static bool inited = false;
 		if (inited) return;
 		inited = true;
 		
-		nite::NiTE::initialize();
-	}
-	
-	void check_error(nite::Status rc)
-	{
-		if (rc == nite::STATUS_OK) return;
-		ofLogError("ofxNiTE2") << openni::OpenNI::getExtendedError();
+        nite::Status status = nite::NiTE::initialize();
+        if (status != nite::STATUS_OK)
+        {
+            ofLogError() << "Initialize failed:" << endl << openni::OpenNI::getExtendedError();
+            ofExit(-1);
+        }
+        else {
+            nite::Version version = nite::NiTE::getVersion();
+            ofLogNotice() << "NITE initialised. Version: " << version.major << "." << version.minor << "." << version.maintenance << "." << version.build;
+
+        }
+
 	}
 	
 	class UserTracker;
@@ -31,6 +44,8 @@ using namespace ofxNiTE2;
 bool UserTracker::setup(ofxNI2::Device &device)
 {
 	ofxNiTE2::init();
+
+    bSetup = false;
 	
 	this->device = &device;
 	mutex = new ofMutex;
@@ -56,29 +71,35 @@ bool UserTracker::setup(ofxNI2::Device &device)
 	user_tracker.setSkeletonSmoothingFactor(0.9);
 	
 	ofAddListener(device.updateDevice, this, &UserTracker::onUpdate);
+    bSetup = true;
 	
 	return true;
 }
 
 void UserTracker::exit()
 {
-    userTrackerFrame.release();
-	ofRemoveListener(device->updateDevice, this, &UserTracker::onUpdate);
-	
-	map<nite::UserId, User::Ref>::iterator it = users.begin();
-	while (it != users.end())
-	{
-		user_tracker.stopSkeletonTracking(it->first);
-		it++;
-	}
-	
-	users.clear();
+    if(bSetup) {
 
-	if (user_tracker.isValid())
-	{
-		user_tracker.removeNewFrameListener(this);
-		user_tracker.destroy();
-	}
+        userTrackerFrame.release();
+        ofRemoveListener(device->updateDevice, this, &UserTracker::onUpdate);
+
+        map<nite::UserId, User::Ref>::iterator it = users.begin();
+        while (it != users.end())
+        {
+            user_tracker.stopSkeletonTracking(it->first);
+            it++;
+        }
+
+        users.clear();
+
+        if (user_tracker.isValid())
+        {
+            user_tracker.removeNewFrameListener(this);
+            user_tracker.destroy();
+        }
+
+    }
+
 }
 
 void UserTracker::clear()
@@ -326,7 +347,7 @@ void Joint::draw()
 	if (parent)
 	{
 		parent->transformGL();
-		ofLine(ofVec3f(0, 0, 0), getPosition());
+        ofDrawLine(ofVec3f(0, 0, 0), getPosition());
 		parent->restoreTransformGL();
 	}
 
@@ -338,7 +359,7 @@ void Joint::draw()
 	ofPushStyle();
 	ofFill();
 	ofSetColor(255);
-	ofCircle(0, 0, 20 * getPositionConfidence());
+    ofDrawCircle(0, 0, 20 * getPositionConfidence());
 	ofPopStyle();
 	
 	restoreTransformGL();
