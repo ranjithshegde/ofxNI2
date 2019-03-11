@@ -88,6 +88,7 @@ public:
 	ofEvent<User::Ref> newUser;
 	ofEvent<User::Ref> lostUser;
 	
+    ~UserTracker();
 	bool setup(ofxNI2::Device &device);
 	void exit();
 	

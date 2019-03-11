@@ -41,6 +41,10 @@ using namespace ofxNiTE2;
 
 #pragma mark - UserTracker
 
+UserTracker::~UserTracker() {
+    UserTracker::exit();
+}
+
 bool UserTracker::setup(ofxNI2::Device &device)
 {
 	ofxNiTE2::init();
@@ -98,6 +102,7 @@ void UserTracker::exit()
             user_tracker.destroy();
         }
 
+        bSetup = false;
     }
 
 }
