@@ -1,10 +1,10 @@
 Setup
 ========
-This is an addon to support the Kinect V2 on Linux/Windows/Mac using the Openni driver from Libfreenect2 (https://github.com/OpenKinect/libfreenect2/) 
+This is an addon to support the Kinect V2 on Linux/Windows/Mac using the OpenNI driver from Libfreenect2 (https://github.com/OpenKinect/libfreenect2/) 
 
 Tested on openframeworks 0.10.1
 
-The included libfreenect2-driver is using the OpenCL back-end. Comppile your own version if you need Cuda or any one of the other Libfreenect2 back-ends.
+The included libfreenect2-openni driver is using the OpenCL back-end. Comppile your own version if you need Cuda or any one of the other Libfreenect2 back-ends.
 
 All Platforms
 -------------
