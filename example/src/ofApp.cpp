@@ -1,10 +1,11 @@
 #include "ofApp.h"
 
 #include "ofxNI2.h"
+#include "ofxLibfreenect2.h"
 
 ofxNI2::Device *device;
 ofxNI2::IrStream ir;
-ofxNI2::ColorStream color;
+ofxNI2::ColorStream colour;
 ofxNI2::DepthStream depth;
 
 //--------------------------------------------------------------
@@ -13,30 +14,30 @@ void ofApp::setup()
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 	ofBackground(0);
-	
+
 	device = new ofxNI2::Device;
-	device->setup();
+    device->setup();
 	
 	if (depth.setup(*device))
 	{
-		depth.setSize(320, 240);
 		depth.setFps(30);
 		depth.start();
+        ofLogNotice() << "depth stream: " << depth.getWidth() << " x " << depth.getHeight();
 	}
 
-	if (ir.setup(*device)) // only for xtion device (OpenNI2-FreenectDriver issue)
-	{
-		ir.setSize(320, 240);
-		ir.setFps(30);
-		ir.start();
-	}
+    if (ir.setup(*device)) // only for xtion device (OpenNI2-FreenectDriver issue)
+    {
+        ir.setFps(30);
+        ir.start();
+        ofLogNotice() << "ir stream: " << ir.getWidth() << " x " << ir.getHeight();
+    }
 	
-//	if (color.setup(*device)) // only for kinect device
-//	{
-//		color.setSize(320, 240);
-//		color.setFps(60);
-//		color.start();
-//	}
+    if (colour.setup(*device)) // only for kinect device
+    {       
+        colour.setFps(60);
+        colour.start();
+        ofLogNotice() << "colour stream: " << colour.getWidth() << " x " << colour.getHeight();
+    }
 }
 
 void ofApp::exit()
@@ -53,9 +54,11 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	ir.draw();
-//	color.draw();
-	depth.draw(320, 0);
+    ir.draw(0,0,640,480);
+    colour.draw(640,0,640,480);
+    depth.draw(640,480,640,480);
+
+    ofDrawBitmapString("Fps: " + ofToString(ofGetFrameRate()), 20,ofGetHeight()-30);
 }
 
 //--------------------------------------------------------------

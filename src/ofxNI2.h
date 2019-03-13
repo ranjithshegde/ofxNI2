@@ -56,6 +56,8 @@ public:
 	bool isRecording() const { return recorder != NULL; }
 	
 	void setDepthColorSyncEnabled(bool b = true) { device.setDepthColorSyncEnabled(b); }
+
+    void setLogLevel(int level);
 	
 	operator openni::Device&() { return device; }
 	operator const openni::Device&() const { return device; }
