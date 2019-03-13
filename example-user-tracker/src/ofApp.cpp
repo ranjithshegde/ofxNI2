@@ -10,9 +10,7 @@ void ofApp::setup()
     ofSetVerticalSync(true);
     ofBackground(0);
 
-    device.setLogLevel(OF_LOG_ERROR);
     device.setup(0);
-
     tracker.setup(device);
 }
 
@@ -32,8 +30,6 @@ void ofApp::update()
 void ofApp::draw()
 {
     depthPixels = tracker.getPixelsRef(1000, 4000);
-    if(!(depthPixels.isAllocated())) return;
-
     depthTexture.loadData(depthPixels);
 
     // draw in 2D

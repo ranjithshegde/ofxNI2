@@ -135,6 +135,8 @@ protected:
 	ofMutex *mutex;
 	ofCamera overlay_camera;
     bool bSetup;
+    int depthWidth;
+    int depthHeight;
 	
 	void onNewFrame(nite::UserTracker &tracker);
 	void onUpdate(ofEventArgs&);

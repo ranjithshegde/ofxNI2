@@ -74,16 +74,20 @@ int Device::listDevices()
 	openni::Array<openni::DeviceInfo> deviceList;
 	openni::OpenNI::enumerateDevices(&deviceList);
 	
+
+    stringstream info;
 	for (int i = 0; i < deviceList.getSize(); ++i)
 	{
-		printf("[%d] %s [%s] (%s)\n", i, deviceList[i].getName(), deviceList[i].getVendor(), deviceList[i].getUri());
+        info << "\n  [" << i << "] " << deviceList[i].getName() << " (" << deviceList[i].getVendor() << ") " << deviceList[i].getUri();
 	}
+    ofLogNotice() << "List devices:" << info.str();
 	
 	return deviceList.getSize();
 }
 
 Device::Device() : recorder(NULL)
 {
+    setLogLevel(OF_LOG_SILENT);
 }
 
 Device::~Device()

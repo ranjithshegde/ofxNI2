@@ -4,5 +4,7 @@ example-user-tracker/build/
 example-user-tracker/example-user-tracker.qbs.user
 example/bin/example_debug
 example/example.qbs.user
+example-assimp-model/bin/example-assimp-model_debug
+example-assimp-model/example-assimp-model.qbs.user
 
 

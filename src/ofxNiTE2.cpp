@@ -55,14 +55,16 @@ bool UserTracker::setup(ofxNI2::Device &device)
 	mutex = new ofMutex;
 	
 	{
-		// get device FOV for overlay camera;
-		
+        // get initial info from depth stream
 		openni::VideoStream stream;
 		stream.create(device, openni::SENSOR_DEPTH);
 		
 		float fov = stream.getVerticalFieldOfView();
 		overlay_camera.setFov(ofRadToDeg(fov));
 		overlay_camera.setNearClip(500);
+
+        depthWidth = stream.getVideoMode().getResolutionX();
+        depthHeight = stream.getVideoMode().getResolutionY();
 		
 		stream.destroy();
 	}
@@ -72,7 +74,9 @@ bool UserTracker::setup(ofxNI2::Device &device)
 	if (!user_tracker.isValid()) return false;
 	
 	user_tracker.addNewFrameListener(this);
-	user_tracker.setSkeletonSmoothingFactor(0.9);
+    //user_tracker.setSkeletonSmoothingFactor(0.9);
+
+    pix.allocate(depthWidth, depthHeight, 1);
 	
 	ofAddListener(device.updateDevice, this, &UserTracker::onUpdate);
     bSetup = true;
