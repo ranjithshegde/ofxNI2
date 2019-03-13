@@ -2,4 +2,7 @@
 example-user-tracker/bin/example-user-tracker_debug
 example-user-tracker/build/
 example-user-tracker/example-user-tracker.qbs.user
+example/bin/example_debug
+example/example.qbs.user
+
 

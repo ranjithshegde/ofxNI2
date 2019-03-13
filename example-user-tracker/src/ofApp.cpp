@@ -9,18 +9,11 @@ void ofApp::setup()
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
     ofBackground(0);
-	cout <<"Path is "+  ofFilePath::getCurrentExeDir() << endl;    
 
-    setenv("LIBFREENECT2_LOGGER_LEVEL","error",true);
-    ofLogNotice() << "LIBFREENECT2_LOGGER_LEVEL = " << getenv("LIBFREENECT2_LOGGER_LEVEL");
-
+    device.setLogLevel(OF_LOG_ERROR);
     device.setup(0);
-    
-    if (tracker.setup(device))
-    {
-        cout << "tracker inited" << endl;
-    }
 
+    tracker.setup(device);
 }
 
 void ofApp::exit()
@@ -42,7 +35,7 @@ void ofApp::draw()
     if(!(depthPixels.isAllocated())) return;
 
     depthTexture.loadData(depthPixels);
-/*
+
     // draw in 2D
     ofSetColor(255);
     depthTexture.draw(0, 0);
@@ -53,8 +46,8 @@ void ofApp::draw()
     tracker.draw();
     tracker.getOverlayCamera().end();
     ofPopView();
-*/
 
+/*
     // draw in 3D
     cam.begin();
     ofDrawAxis(100);
@@ -75,7 +68,7 @@ void ofApp::draw()
 
     cam.end();
 
-
+*/
 
     ofDrawBitmapString(ofToString(ofGetFrameRate()),20,ofGetHeight()-20);
 

@@ -90,10 +90,27 @@ Device::~Device()
 {
 }
 
-void Device::setLogLevel(int level)
+void Device::setLogLevel(ofLogLevel level)
 {
+    /* this does nothing:
     check_error(openni::OpenNI::setLogMinSeverity(level));
     check_error(openni::OpenNI::setLogConsoleOutput(false));
+    */
+    if(level == OF_LOG_SILENT) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","none",true);
+    } else if (level == OF_LOG_FATAL_ERROR) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","error",true);
+    } else if (level == OF_LOG_ERROR) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","error",true);
+    } else if (level == OF_LOG_WARNING) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","warning",true);
+    } else if (level == OF_LOG_NOTICE) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","info",true);
+    } else if (level == OF_LOG_VERBOSE) {
+        setenv("LIBFREENECT2_LOGGER_LEVEL","debug",true);
+    }
+    ofLogNotice() << "LIBFREENECT2_LOGGER_LEVEL = " << getenv("LIBFREENECT2_LOGGER_LEVEL");
+
 }
 
 bool Device::setup()
@@ -262,6 +279,17 @@ void Stream::start()
 	{
 		assert_error(stream.start());
 	}
+
+    //	SENSOR_IR = 1,
+    //  SENSOR_COLOR = 2,
+    //  SENSOR_DEPTH = 3,
+    openni::SensorType type = stream.getSensorInfo().getSensorType();
+    string streamType;
+    if(type == openni::SENSOR_IR) streamType = "IR";
+    else if(type == openni::SENSOR_COLOR) streamType = "Colour";
+    else if(type == openni::SENSOR_DEPTH) streamType = "Depth";
+    ofLogNotice() << streamType << " stream dimensions: " << stream.getVideoMode().getResolutionX() << " x " << stream.getVideoMode().getResolutionY();;
+
 }
 
 void Stream::onNewFrame(openni::VideoStream&)

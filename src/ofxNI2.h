@@ -57,7 +57,7 @@ public:
 	
 	void setDepthColorSyncEnabled(bool b = true) { device.setDepthColorSyncEnabled(b); }
 
-    void setLogLevel(int level);
+    void setLogLevel(ofLogLevel level);
 	
 	operator openni::Device&() { return device; }
 	operator const openni::Device&() const { return device; }

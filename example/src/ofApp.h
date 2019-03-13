@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxNI2.h"
 
 class ofApp : public ofBaseApp
 {
@@ -20,4 +21,9 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
+
+    ofxNI2::Device device;
+    ofxNI2::IrStream ir;
+    ofxNI2::ColorStream colour;
+    ofxNI2::DepthStream depth;
 };
