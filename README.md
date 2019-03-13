@@ -10,9 +10,11 @@ All Platforms
 -------------
 
 
+
 Linux
 -------
 Create a project using the project generator, including this addon
+
 Copy the NITE.ini file from the copy_to_bin_folder to your application's bin folder. If you aren't using NITE (no skeleton tracking, just depth) you can ignore this step.
 
 OSX
