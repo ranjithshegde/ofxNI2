@@ -1,2 +1,5 @@
 .DS_Store
+example-user-tracker/bin/example-user-tracker_debug
+example-user-tracker/build/
+example-user-tracker/example-user-tracker.qbs.user
 
