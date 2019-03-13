@@ -87,6 +87,12 @@ Device::~Device()
 {
 }
 
+void Device::setLogLevel(int level)
+{
+    check_error(openni::OpenNI::setLogMinSeverity(level));
+    check_error(openni::OpenNI::setLogConsoleOutput(false));
+}
+
 bool Device::setup()
 {
 	ofxNI2::init();
