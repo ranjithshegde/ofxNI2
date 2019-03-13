@@ -7,11 +7,11 @@ Tested on openframeworks 0.10.1
 The included libfreenect2-driver is using the OpenCL back-end. Comppile your own version if you need Cuda or any one of the other Libfreenect2 back-ends.
 
 ##All Platforms
-Copy the NITE2 folder from the copy_to_bin_folder to your application's bin folder
-Also copy the platform specific driver to the bin folder. The folder is called "OpenNI2" and a platform specific version of this folder is found in the copy_to_bin_folder as well.
+
 
 ##Linux
-This should just work with the project generator.
+Create a project using the project generator, including this addon
+Copy the NITE.ini file from the copy_to_bin_folder to your application's bin folder. If you aren't using NITE (no skeleton tracking, just depth) you can ignore this step.
 
 ##OSX
 Use project generator and then in xcode:

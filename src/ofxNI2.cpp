@@ -24,6 +24,18 @@ namespace ofxNI2
 		if (inited) return;
 		inited = true;
 
+        openni::Status status = openni::OpenNI::initialize();
+         if (status != openni::STATUS_OK)
+         {
+             ofLogError() << "Initialize failed:" << endl << openni::OpenNI::getExtendedError();
+             ofExit(-1);
+         }
+         else {
+             openni::Version version = openni::OpenNI::getVersion();
+             ofLogNotice() << "OpenNI initialised. Version: " << version.major << "." << version.minor << "." << version.maintenance << "." << version.build;
+         }
+
+         /*
         string path;
 #ifndef TARGET_WIN32
         
@@ -35,28 +47,19 @@ namespace ofxNI2
 		cout << "here is the file path " + path << endl;
 
 #endif
+
         if (ofFile::doesFileExist(path, false))
         {
 #ifndef TARGET_WIN32
-            setenv("OPENNI2_DRIVERS_PATH", path.c_str(), 1);
+           // setenv("OPENNI2_DRIVERS_PATH", path.c_str(), 1);
 #endif
-            openni::Status status = openni::OpenNI::initialize();
-             if (status != openni::STATUS_OK)
-             {
-                 ofLogError() << "Initialize failed:" << endl << openni::OpenNI::getExtendedError();
-                 ofExit(-1);
-             }
-             else {
-                 openni::Version version = openni::OpenNI::getVersion();
-                 ofLogNotice() << "OpenNI initialised. Version: " << version.major << "." << version.minor << "." << version.maintenance << "." << version.build;
-             }
-            //assert_error(openni::OpenNI::initialize());
         }
         else
         {
             ofLogError("ofxNI2") << "libs not found";
             ofExit(-1);
         }
+*/
 	}
 }
 

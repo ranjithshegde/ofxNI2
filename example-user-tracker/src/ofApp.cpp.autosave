@@ -42,7 +42,7 @@ void ofApp::draw()
     if(!(depthPixels.isAllocated())) return;
 
     depthTexture.loadData(depthPixels);
-/*
+
     // draw in 2D
     ofSetColor(255);
     depthTexture.draw(0, 0);
@@ -53,8 +53,8 @@ void ofApp::draw()
     tracker.draw();
     tracker.getOverlayCamera().end();
     ofPopView();
-*/
 
+/*
     // draw in 3D
     cam.begin();
     ofDrawAxis(100);
@@ -75,7 +75,7 @@ void ofApp::draw()
 
     cam.end();
 
-
+*/
 
     ofDrawBitmapString(ofToString(ofGetFrameRate()),20,ofGetHeight()-20);
 

@@ -25,4 +25,6 @@ public:
     
     ofxNI2::Device device;
     ofxNiTE2::UserTracker tracker;
+    ofPixels depthPixels;
+    ofTexture depthTexture;
 };
