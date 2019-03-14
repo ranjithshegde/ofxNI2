@@ -16,13 +16,14 @@ void ofApp::setup()
 		depth.start();
 	}
 
-    if (ir.setup(device)) // only for xtion device (OpenNI2-FreenectDriver issue)
+    /*if (ir.setup(device)) // only for xtion or orbbec astra device (OpenNI2-FreenectDriver issue)
     {
         ir.setFps(30);
         ir.start();
     }
+    */
 	
-    if (colour.setup(device)) // only for kinect device
+    if (colour.setup(device)) // only for kinect device (no colour on orbbec astra)
     {       
         colour.setFps(60);
         colour.start();
@@ -42,7 +43,7 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    ir.draw(0,0,640,480);
+    //ir.draw(0,0,640,480);
     colour.draw(640,0,640,480);
     depth.draw(640,480,640,480);
 

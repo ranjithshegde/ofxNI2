@@ -176,8 +176,14 @@ public:
 	void setAutoExposureEnabled(bool yn = true) { stream.getCameraSettings()->setAutoExposureEnabled(yn); }
 	bool getAutoExposureEnabled() { return stream.getCameraSettings()->getAutoExposureEnabled(); }
 
-	void setAutoWhiteBalanceEnabled(bool yn = true) { stream.getCameraSettings()->setAutoWhiteBalanceEnabled(yn); }
+	void setAutoWhiteBalanceEnabled(bool yn = true) { stream.getCameraSettings()->setAutoWhiteBalanceEnabled(yn); }    
 	bool getAutoWhiteBalanceEnabled() { return stream.getCameraSettings()->getAutoWhiteBalanceEnabled(); }
+
+    void setGain(int gain) { stream.getCameraSettings()->setGain(gain); }    
+    int getGain() { return stream.getCameraSettings()->getGain(); }
+
+    void setExposure(int exposure) { stream.getCameraSettings()->setExposure(exposure); }
+    int getExposure() { return stream.getCameraSettings()->getExposure(); }
 
 protected:
 	
