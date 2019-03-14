@@ -12,6 +12,7 @@ void ofApp::setup()
 
     device.setup(0);
     tracker.setup(device);
+    //tracker.enableTrackingOutOfFrame(true);
 }
 
 void ofApp::exit()
@@ -35,19 +36,22 @@ void ofApp::draw()
     // draw in 2D
     ofSetColor(255);
     depthTexture.draw(0, 0);
+    tracker.draw();
 
+
+    /*
+    // draw 3D skeleton in 2D
     ofPushView();
     tracker.getOverlayCamera().begin(ofRectangle(0, 0, depthTexture.getWidth(), depthTexture.getHeight()));
     ofDrawAxis(100);
-    tracker.draw();
+    tracker.draw3D();
     tracker.getOverlayCamera().end();
     ofPopView();
 
-/*
     // draw in 3D
     cam.begin();
     ofDrawAxis(100);
-    tracker.draw();
+    tracker.draw3D();
 
     // draw box
     ofNoFill();
@@ -63,10 +67,10 @@ void ofApp::draw()
     }
 
     cam.end();
+    */
 
-*/
-
-    ofDrawBitmapString(ofToString(ofGetFrameRate()),20,ofGetHeight()-20);
+    ofDrawBitmapString("Tracker FPS: "+ofToString(tracker.getFrameRate()),20,ofGetHeight()-40);
+    ofDrawBitmapString("Application FPS: "+ofToString(ofGetFrameRate()),20,ofGetHeight()-20);
 
 }
 

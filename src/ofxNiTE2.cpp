@@ -74,12 +74,13 @@ bool UserTracker::setup(ofxNI2::Device &device)
 	if (!user_tracker.isValid()) return false;
 	
 	user_tracker.addNewFrameListener(this);
-    //user_tracker.setSkeletonSmoothingFactor(0.9);
+    user_tracker.setSkeletonSmoothingFactor(0.5);
 
     pix.allocate(depthWidth, depthHeight, 1);
 	
 	ofAddListener(device.updateDevice, this, &UserTracker::onUpdate);
     bSetup = true;
+    bTrackOutOfFrame = false;
 	
 	return true;
 }
@@ -134,6 +135,13 @@ void UserTracker::onNewFrame(nite::UserTracker &tracker)
 		check_error(rc);
 		return;
 	}
+
+    // calculate FPS of tracker
+    lastFrame = newFrame;
+    newFrame = ofGetElapsedTimeMillis();
+    float delta  = newFrame - lastFrame;
+    float newfps = 1.0f/(delta/1000.0f);
+    fps = 0.8f*fps + 0.2f*newfps;
 	
 	user_map = userTrackerFrame.getUserMap();
 	
@@ -186,33 +194,46 @@ void UserTracker::onUpdate(ofEventArgs&)
 				user_ptr = User::Ref(new User);
 				users[user.getId()] = user_ptr;
 				user_tracker.startSkeletonTracking(user.getId());
+                startTrackTime = ofGetElapsedTimeMillis();
+                bShowDelta = true;
 			}
 			else if (has_user)
 			{
-				if (user.isLost())
+                if ((user.isLost()) || (!(user.isVisible()) && (!bTrackOutOfFrame)) )
 				{
 					// emit lost user event
 					ofNotifyEvent(lostUser, users[user.getId()], this);
+                    ofLogNotice("ofxNite") << "Lost user...";
 					
 					user_tracker.stopSkeletonTracking(user.getId());
 					users.erase(user.getId());
 					continue;
-				}
+                }
 				else
 				{
 					user_ptr = users[user.getId()];
+
+                    if(user.getSkeleton().getState() == nite::SKELETON_TRACKED )
+                    {
+                        if(bShowDelta) {
+                            float deltaTime = (ofGetElapsedTimeMillis() - startTrackTime)/1000.0f;
+                            ofLogNotice("ofxNiTE2") << "User found in " << deltaTime << " secs";
+                            bShowDelta = false;
+                        }
+                    }
 				}
 			}
 			
 			if (!user_ptr) continue;
 			
-			user_ptr->updateUserData(user);
+            user_ptr->updateUserData(user,user_tracker);
 			users_arr.push_back(user_ptr);
 			
 			if (user.isNew())
 			{
 				// emit new user event
 				ofNotifyEvent(newUser, user_ptr, this);
+                ofLogNotice("ofxNiTE2") << "New user id: " << user.getId();
 			}
 		}
 		
@@ -227,22 +248,33 @@ void UserTracker::draw()
 	map<nite::UserId, User::Ref>::iterator it = users.begin();
 	while (it != users.end())
 	{
-		it->second->draw();
+        it->second->draw();
 		it++;
 	}
 }
 
+void UserTracker::draw3D()
+{
+    map<nite::UserId, User::Ref>::iterator it = users.begin();
+    while (it != users.end())
+    {
+        it->second->draw3D();
+        it++;
+    }
+}
+
 #pragma mark - User
 
-void User::updateUserData(const nite::UserData& data)
+void User::updateUserData(const nite::UserData& data, const nite::UserTracker& tracker)
 {
 	userdata = data;
 	
 	for (int i = 0; i < NITE_JOINT_COUNT; i++)
 	{
-		const nite::SkeletonJoint &o = data.getSkeleton().getJoint((nite::JointType)i);
-		joints[i].updateJointData(o);
+        const nite::SkeletonJoint &joint = data.getSkeleton().getJoint((nite::JointType)i);
+        joints[i].updateJointData(joint);
 	}
+
 	
 	stringstream ss;
 	ss << "[" << data.getId() << "]" << endl;
@@ -258,7 +290,69 @@ void User::updateUserData(const nite::UserData& data)
 			ss << "Calibrating...";
 			break;
 		case nite::SKELETON_TRACKED:
-			ss << "Tracking!";
+			ss << "Tracking!";            
+            {
+                float x, y;
+                nite::SkeletonJoint joint = data.getSkeleton().getJoint(nite::JOINT_HEAD);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &head.x, &head.y);
+                 //= ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_NECK);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                neck = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_SHOULDER);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftShoulder = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_SHOULDER);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightShoulder = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_ELBOW);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftElbow = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_ELBOW);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightElbow = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_HAND);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftHand = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightHand = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_TORSO);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                torso = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_HIP);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftHip = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_HIP);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightHip = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_KNEE);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftKnee = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_KNEE);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightKnee = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_LEFT_FOOT);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                leftFoot = ofVec2f(x,y);
+
+                joint = data.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT);
+                tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+                rightFoot = ofVec2f(x,y);
+            }
 			break;
 		case nite::SKELETON_CALIBRATION_ERROR_NOT_IN_POSE:
 		case nite::SKELETON_CALIBRATION_ERROR_HANDS:
@@ -274,24 +368,70 @@ void User::updateUserData(const nite::UserData& data)
 	const nite::Point3f& pos = userdata.getCenterOfMass();
 	center_of_mass.set(pos.x, pos.y, -pos.z);
 	
-	Joint &torso = joints[nite::JOINT_TORSO];
-    
-    glm::distance2(glm::vec3(torso.getPosition()), glm::vec3(center_of_bone));
-	activity += (glm::distance2(glm::vec3(torso.getPosition()), glm::vec3(center_of_bone)) - activity) * 0.1;
-
-	//activity += (torso.getPosition().distance(center_of_bone) - activity) * 0.1;
-    
-	center_of_bone = torso.getPosition();
+    Joint &_torso = joints[nite::JOINT_TORSO];
+    glm::distance2(glm::vec3(_torso.getPosition()), glm::vec3(center_of_bone));
+    activity += (glm::distance2(glm::vec3(_torso.getPosition()), glm::vec3(center_of_bone)) - activity) * 0.1;
+    center_of_bone = _torso.getPosition();
 }
 
 void User::draw()
 {
-	for (int i = 0; i < joints.size(); i++)
-	{
-		joints[i].draw();
-	}
-	
-	ofDrawBitmapString(status_string, center_of_mass);
+    ofPushStyle();
+    float r = 3;
+    ofDrawCircle(head,          r);
+    ofDrawCircle(neck,          r);
+    ofDrawCircle(leftShoulder,  r);
+    ofDrawCircle(rightShoulder, r);
+    ofDrawCircle(leftElbow,     r);
+    ofDrawCircle(rightElbow,    r);
+    ofDrawCircle(leftHand,      r);
+    ofDrawCircle(rightHand,     r);
+    ofDrawCircle(torso,         r);
+    ofDrawCircle(leftHip,       r);
+    ofDrawCircle(rightHip,      r);
+    ofDrawCircle(leftKnee,      r);
+    ofDrawCircle(rightKnee,     r);
+    ofDrawCircle(leftFoot,      r);
+    ofDrawCircle(rightFoot,     r);
+    ofDrawLine(head,            neck);
+    ofDrawLine(leftShoulder,    rightShoulder);
+    ofDrawLine(leftShoulder,    torso);
+    ofDrawLine(rightShoulder,   torso);
+    ofDrawLine(leftShoulder,    leftElbow);
+    ofDrawLine(leftElbow,       leftHand);
+    ofDrawLine(rightShoulder,   rightElbow);
+    ofDrawLine(rightElbow,      rightHand);
+    ofDrawLine(torso,           leftHip);
+    ofDrawLine(torso,           rightHip);
+    ofDrawLine(leftHip,         leftKnee);
+    ofDrawLine(leftKnee,        leftFoot);
+    ofDrawLine(rightHip,        rightKnee);
+    ofDrawLine(rightKnee,       rightFoot);
+
+    ofDrawBitmapString(status_string, center_of_mass);
+    ofPopStyle();
+}
+
+void User::draw3D()
+{
+    ofPushStyle();
+    for (int i = 0; i < joints.size(); i++)
+    {
+        joints[i].draw();
+    }
+    ofDrawBitmapString(status_string, center_of_mass);
+    ofPopStyle();
+
+}
+
+ofVec2f User::getJointInDepthCoordinates(nite::UserData user, nite::JointType jointType, nite::UserTracker tracker)
+{
+  const nite::SkeletonJoint& joint = user.getSkeleton().getJoint(jointType);
+  float x, y;
+
+  tracker.convertJointCoordinatesToDepth(joint.getPosition().x, joint.getPosition().y, joint.getPosition().z, &x, &y);
+
+  return ofVec2f(x, y);
 }
 
 void User::buildSkeleton()

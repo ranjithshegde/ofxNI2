@@ -59,25 +59,43 @@ public:
 	inline size_t getNumJoints() { return NITE_JOINT_COUNT; }
 	const Joint& getJoint(size_t idx) { return joints[idx]; }
 	const Joint& getJoint(nite::JointType type) { return joints[(nite::JointType)type]; }
-	
+    ofVec2f getJointInDepthCoordinates(nite::UserData user, nite::JointType jointType, nite::UserTracker tracker);
+
 	void draw();
+    void draw3D();
 	
 	nite::UserData get() { return userdata; }
 	const nite::UserData& get() const { return userdata; }
+
+    ofVec2f head;
+    ofVec2f neck;
+    ofVec2f leftShoulder;
+    ofVec2f rightShoulder;
+    ofVec2f leftElbow;
+    ofVec2f rightElbow;
+    ofVec2f leftHand;
+    ofVec2f rightHand;
+    ofVec2f torso;
+    ofVec2f leftHip;
+    ofVec2f rightHip;
+    ofVec2f leftKnee;
+    ofVec2f rightKnee;
+    ofVec2f leftFoot;
+    ofVec2f rightFoot;
 	
 protected:
 
 	string status_string;
 	nite::UserData userdata;
 	vector<Joint> joints;
-	
+
 	float activity;
 	
 	ofVec3f center_of_mass;
 	ofVec3f center_of_bone;
 	
 	void buildSkeleton();
-	void updateUserData(const nite::UserData& data);
+    void updateUserData(const nite::UserData& data, const nite::UserTracker& tracker);
 	
 };
 
@@ -98,6 +116,7 @@ public:
 	ofPixels getPixelsRef(int near, int far, bool invert = false);
 	
 	void draw();
+    void draw3D();
 	
 	ofCamera getOverlayCamera() { return overlay_camera; }
 	
@@ -110,11 +129,14 @@ public:
 	
 	nite::UserTracker get() { return user_tracker; }
 	const nite::UserTracker& get() const { return user_tracker; }
+
+    void enableTrackingOutOfFrame(bool bTrack) {bTrackOutOfFrame = bTrack;}
     
     inline nite::Plane getFloor() { return userTrackerFrame.getFloor(); }
     inline float getFloorConfidence() { return userTrackerFrame.getFloorConfidence(); }
 	
 	inline nite::UserTrackerFrameRef getFrame() const { return userTrackerFrame; }
+    const float getFrameRate() {return fps;}
 	
 protected:
 	
@@ -137,6 +159,13 @@ protected:
     bool bSetup;
     int depthWidth;
     int depthHeight;
+
+    float startTrackTime;
+    bool bShowDelta;
+    bool bTrackOutOfFrame;
+    float fps;
+    float lastFrame;
+    float newFrame;
 	
 	void onNewFrame(nite::UserTracker &tracker);
 	void onUpdate(ofEventArgs&);
