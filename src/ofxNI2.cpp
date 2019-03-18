@@ -94,12 +94,26 @@ Device::~Device()
 {
 }
 
+#ifdef TARGET_WIN32
+int setenv(const char *name, const char *value, int overwrite)
+{
+	int errcode = 0;
+	if (!overwrite) {
+		size_t envsize = 0;
+		errcode = getenv_s(&envsize, NULL, 0, name);
+		if (errcode || envsize) return errcode;
+	}
+	return _putenv_s(name, value);
+}
+#endif
+
 void Device::setLogLevel(ofLogLevel level)
 {
     /* this does nothing:
     check_error(openni::OpenNI::setLogMinSeverity(level));
     check_error(openni::OpenNI::setLogConsoleOutput(false));
     */
+
     if(level == OF_LOG_SILENT) {
         setenv("LIBFREENECT2_LOGGER_LEVEL","none",true);
     } else if (level == OF_LOG_FATAL_ERROR) {
@@ -113,6 +127,7 @@ void Device::setLogLevel(ofLogLevel level)
     } else if (level == OF_LOG_VERBOSE) {
         setenv("LIBFREENECT2_LOGGER_LEVEL","debug",true);
     }
+
     ofLogNotice() << "LIBFREENECT2_LOGGER_LEVEL = " << getenv("LIBFREENECT2_LOGGER_LEVEL");
 
 }
