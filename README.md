@@ -2,7 +2,7 @@ Setup
 ========
 This is an addon to support the Kinect V2 on Linux/Windows/Mac using the OpenNI driver from Libfreenect2 (https://github.com/OpenKinect/libfreenect2/) 
 
-Tested on openframeworks 0.10.1
+Tested on openframeworks 0.9.8
 
 The included libfreenect2-openni driver is using the OpenCL back-end. Compile your own version if you need Cuda or any one of the other Libfreenect2 back-ends.
 
@@ -32,6 +32,8 @@ install_name_tool -change libOpenNI2.dylib @executable_path/../MacOS/libOpenNI2.
 
 Visual Studio
 -------------
+Tested using Visual Studio 2015 on Windows 10.
+
 Create a project using the project generator, including this addon
 
 You will need to copy the contents of copy_to_bin_folder/vs/x64/ to your application's bin folder. The project generator will do this for you however.
