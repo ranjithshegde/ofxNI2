@@ -15,7 +15,7 @@ Linux
 -------
 Create a project using the project generator, including this addon
 
-Copy the NITE.ini file from the copy_to_bin_folder to your application's bin folder. If you aren't using NITE (no skeleton tracking, just depth) you can ignore this step.
+Copy the NITE.ini file from copy_to_bin_folder/linux64 to your application's bin folder. If you aren't using NITE (no skeleton tracking, just depth) you can ignore this step.
 
 OSX
 ---
@@ -32,4 +32,8 @@ install_name_tool -change libOpenNI2.dylib @executable_path/../MacOS/libOpenNI2.
 
 Visual Studio
 -------------
-This should just work with the project generator.
+Tested using Visual Studio 2017 on Windows 10.
+
+Create a project using the project generator, including this addon
+
+You will need to copy the contents of copy_to_bin_folder/vs/x64/ to your application's bin folder. The project generator will do this for you however.
