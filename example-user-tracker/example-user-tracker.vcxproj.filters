@@ -167,7 +167,13 @@
 		<ClInclude Include="..\..\..\addons\ofxNI2\libs\OpenNI2\include\ni2\OpenNI.h">
 			<Filter>addons\ofxNI2\libs\OpenNI2\include\ni2</Filter>
 		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxNI2\libs\OpenNI2\include\ni2\PrimeSense.h">
+			<Filter>addons\ofxNI2\libs\OpenNI2\include\ni2</Filter>
+		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxNI2\libs\OpenNI2\include\ni2\PS1080.h">
+			<Filter>addons\ofxNI2\libs\OpenNI2\include\ni2</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxNI2\libs\OpenNI2\include\ni2\PSLink.h">
 			<Filter>addons\ofxNI2\libs\OpenNI2\include\ni2</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxNI2\libs\OpenNI2\include\ni2\Win32\OniPlatformWin32.h">

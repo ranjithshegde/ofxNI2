@@ -1,9 +1,9 @@
 meta:
 	ADDON_NAME = ofxNi2
-	ADDON_DESCRIPTION = An addon for the new Kinect For Windows V2 sensor
-	ADDON_AUTHOR = Theo Watson
-	ADDON_TAGS = "kinect" "kinectv2" "libfreenect" "libfreenect2"
-	ADDON_URL = https://github.com/ofTheo/ofxKinectV2
+	ADDON_DESCRIPTION = An addon for the using OpenNI2 and NiTE2 with the Kinect V2 sensor
+	ADDON_AUTHOR = Pierre Proske
+	ADDON_TAGS = "kinect" "kinectv2" "libfreenect" "libfreenect2" "openni2" "NITE2"
+	ADDON_URL = https://github.com/pierrep/ofxNI2
 
 osx:
 	ADDON_LIBS=
@@ -35,3 +35,7 @@ linux:
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
 	ADDON_INCLUDES_EXCLUDE = libs/libusb/%
+	
+vs:
+	ADDON_LIBS_EXCLUDE = libs/OpenNI2/lib/vs/x64/OpenNI2/Drivers/%
+	ADDON_LIBS_EXCLUDE += libs/NiTE2/lib/vs/x64/NiTE2.dll	

@@ -369,8 +369,7 @@ void User::updateUserData(const nite::UserData& data, const nite::UserTracker& t
 	center_of_mass.set(pos.x, pos.y, -pos.z);
 	
     Joint &_torso = joints[nite::JOINT_TORSO];
-    glm::distance2(glm::vec3(_torso.getPosition()), glm::vec3(center_of_bone));
-    activity += (glm::distance2(glm::vec3(_torso.getPosition()), glm::vec3(center_of_bone)) - activity) * 0.1;
+	activity += (_torso.getPosition().distance(center_of_bone) - activity) * 0.1;
     center_of_bone = _torso.getPosition();
 }
 

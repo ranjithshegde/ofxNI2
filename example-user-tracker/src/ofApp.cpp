@@ -10,6 +10,7 @@ void ofApp::setup()
     ofSetVerticalSync(true);
     ofBackground(0);
 
+	device.setLogLevel(OF_LOG_NOTICE);
     device.setup(0);
     tracker.setup(device);
     //tracker.enableTrackingOutOfFrame(true);
