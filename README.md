@@ -33,6 +33,7 @@ install_name_tool -change libOpenNI2.dylib @executable_path/../MacOS/libOpenNI2.
 Visual Studio
 -------------
 Tested using Visual Studio 2015 on Windows 10.
+
 You will need to install the libusbK  driver here in order to use the Libfreenect2 drivers:
 https://github.com/OpenKinect/libfreenect2/blob/master/README.md#windows--visual-studio
 
