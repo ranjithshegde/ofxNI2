@@ -39,3 +39,4 @@ linux:
 vs:
 	ADDON_LIBS_EXCLUDE = libs/OpenNI2/lib/vs/x64/OpenNI2/Drivers/%
 	ADDON_LIBS_EXCLUDE += libs/NiTE2/lib/vs/x64/NiTE2.dll	
+	ADDON_DLLS_TO_COPY  = copy_to_bin_folder/vs/x64/
