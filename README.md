@@ -8,7 +8,16 @@ The included libfreenect2-openni driver is using the OpenCL back-end. Compile yo
 
 All Platforms
 -------------
+Logging is enabled in 3 ways.
 
+Libfreenect2 logging is controlled via: 
+`device.setLogLevel(OF_LOG_NOTICE);
+`
+You can use the normal OF log constants to choose what level of logging you want. If you don't call this function, logging defaults to OF_LOG_SILENT
+
+OpenNI.ini controls the OpenNI2 logging. On Windows should edit the file in your bin directory to turn this on. On Linux you should edit the file in ofxNI2/libs/OpenNI2/lib/linux64/
+
+NiTE.ini controls the NiTE logging. You should edit the file in your bin directory to turn this on.
 
 
 Linux
