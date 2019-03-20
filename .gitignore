@@ -33,3 +33,5 @@ example-user-tracker/bin/libeay32.dll
 example-user-tracker/bin/ssleay32.dll
 example-user-tracker/example-user-tracker.sdf
 example-user-tracker/obj/
+example-user-tracker/bin/example-user-trackerDebug.app/
+
