@@ -6,6 +6,8 @@ Tested on openframeworks 0.10.1
 
 The included libfreenect2-openni driver is using the OpenCL back-end. Compile your own version if you need Cuda or any one of the other Libfreenect2 back-ends.
 
+It also supports the Orbbec Astra camera, but only for receiving the depth data, not skeleton tracking.
+
 All Platforms
 -------------
 Logging is enabled in 3 ways.
