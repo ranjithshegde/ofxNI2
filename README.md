@@ -1,6 +1,6 @@
 Setup
 ========
-This is an addon to support the Kinect V2 on Linux/Windows/Mac using the OpenNI driver from Libfreenect2 (https://github.com/OpenKinect/libfreenect2/) 
+This is an addon to support the Kinect V2 on Linux/Windows/Mac using the OpenNI driver from Libfreenect2 (https://github.com/OpenKinect/libfreenect2/). Generally the point of this would be to use the NiTE skeleton tracking library. NiTE is no longer publicly available, but the binaries are included in this addon. If you just need to get the Kinect's depth texture, you're probably better off using my other addon which doesn't require OpenNI, https://github.com/pierrep/ofxLibFreenect2
 
 Tested on openframeworks 0.10.1
 
