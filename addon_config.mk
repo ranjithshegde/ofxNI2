@@ -1,5 +1,5 @@
 meta:
-	ADDON_NAME = ofxNi2
+	ADDON_NAME = ofxNI2
 	ADDON_DESCRIPTION = An addon for the using OpenNI2 and NiTE2 with the Kinect V2 sensor
 	ADDON_AUTHOR = Pierre Proske
 	ADDON_TAGS = "kinect" "kinectv2" "libfreenect" "libfreenect2" "openni2" "NITE2"
